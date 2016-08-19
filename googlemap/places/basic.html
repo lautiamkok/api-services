@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+<div class="container">
+    <form method="POST" action="server.php" role="form">
+        <div class="form-group">
+            <label class="control-label">Location</label>
+            <input type="text" class="form-control" id="autocomplete" name="location[long]" value="" placeholder="Plymouth, UK">
+            <input type="hidden" name="location[street_number]" value="">
+            <input type="hidden" name="location[route]" value="">
+            <input type="hidden" name="location[locality]" value="">
+            <input type="hidden" name="location[administrative_area_level_1]" value="">
+            <input type="hidden" name="location[country]" value="">
+            <input type="hidden" name="location[postal_code]" value="">
+            <input type="hidden" name="location[lat]" value="">
+            <input type="hidden" name="location[lng]" value="">
+        </div>
+        <button type="submit" class="btn btn-primary button-submit">Submit</button>
+    </form>
+</div>
+
+    <script>
+    // https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform
+    // http://stackoverflow.com/questions/35334324/populate-the-longitude-and-latitude-using-google-maps-api
+    // This example displays an address form, using the autocomplete feature
+    // of the Google Places API to help users fill in the information.
+
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    var placeSearch, autocomplete;
+    var componentAddress = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_1: 'short_name',
+        country: 'long_name',
+        postal_code: 'short_name'
+    };
+    var componentLatLong = {
+        lat: 'latitude',
+        lng: 'longitude',
+    };
+
+    function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: ['geocode']});
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+    }
+
+    function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+        // console.log(place.geometry.location.lat()); // latitude
+        // console.log(place.geometry.location.lng()); // longtitude
+        // console.log(place.formatted_address); // city, state, country
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        for (var i = 0; i < place.address_components.length; i++) {
+            var addressType = place.address_components[i].types[0];
+            if (componentAddress[addressType]) {
+                var val = place.address_components[i][componentAddress[addressType]];
+                console.log(addressType + ': ' + val);
+                // http://stackoverflow.com/questions/9252217/javascript-name-array-input-selectors-namesometext
+                $("input[name='location[" + addressType + "]']").val(val);
+            }
+        }
+
+        for (var key in place.geometry.location) {
+            if (componentLatLong[key]) {
+                $("input[name='location[" + key + "]']").val(place.geometry.location[key]());
+            }
+        }
+    }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC97XvuCRRQx4IfPESsfKcHjgMWGQYhzkE&libraries=places&callback=initAutocomplete"
+        async defer></script>
+</body>
+
+</html>

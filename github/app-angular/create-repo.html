@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GitHub Repo App</title>
+    <link href="css/main.css" rel="stylesheet" type="text/css" >
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- include lib js files here... -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="src/app.js"></script>
+    <script type="text/javascript" src="src/CreateRepoController.js"></script>
+
+    </head>
+
+    <body ng-app="RepoApp" ng-controller="CreateRepoController">
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="project.html">Repo App</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="list-repos.html">List Repos</a></li>
+                    <li class="active"><a href="create-repo.html">Create Repo</a></li>
+                    <li><a href="pull-request.html">Pull Request</a></li>
+                    <li><a href="count-emoji.html">Count Emoji</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container">
+
+            <form class="form-submit" ng-submit="submit()">
+
+                <p>Create a GitHub repository in your GitHub account. For an Example:</p>
+                <p>Username: splllctre<br/>
+                password: sp8ctre<br/>
+                Repo name: Hello-World<br/>
+                Repo Description: Hello from the other side!</p>
+
+                <h2>Please fill in</h2>
+
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="text" name="username" class="form-control form-element" placeholder="Username" required autofocus ng-model="username">
+
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" class="form-control form-element" placeholder="Password" required ng-model="password">
+
+                <label for="inputRepoName" class="sr-only">Repo Name</label>
+                <input type="text" name="name" class="form-control form-element" placeholder="Repo Name" required ng-model="name">
+
+                <label for="inputRepoDescription" class="sr-only">Repo Description</label>
+                <textarea rows="4" cols="50" class="form-control form-element" placeholder="Repo Description" required autofocus ng-model="description">
+                </textarea>
+
+                <div class="alert alert-success" ng-show="repo">
+                    <p>Well done! You have just added a repo.</p>
+                    <p><b>Repo details:</b></p>
+                    <p>Name: <i>{{ repo.name }}</i></p>
+                    <p>Description: <i>{{ repo.description }}</i></p>
+                    <p>HTML URL: <i>{{ repo.html_url }}</i></p>
+                    <p>Clone URL: <i>{{ repo.clone_url }}</i></p>
+                </div>
+
+                <div class="alert alert-danger" ng-show="error" ng-click="error=false">
+                    {{ error.message }}
+                    <p ng-if="error.errors"><b>Reason</b>: {{ error.errors[0].message }}</p>
+                </div>
+
+                <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="!username || !password || !name || !description">Submit</button>
+            </form>
+        </div>
+    </body>
+</html>
